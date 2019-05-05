@@ -10,12 +10,12 @@ import Foundation
 
 class Concentration{
     
-    var cards = [Card]()
+    private(set) var cards = [Card]()
     
     var indexOfOneAndOnlyFaceUpCard: Int?
     
-    
     func chooseCard(at index: Int)  {
+        assert(cards.indices.contains(index), "Concentration.chooseCard(at: \(index): chose index not in the cards")
         if !cards[index].IsMatched {
             if let matchIndex = indexOfOneAndOnlyFaceUpCard, matchIndex != index {
                 // 匹配成功
