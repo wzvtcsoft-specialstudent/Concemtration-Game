@@ -11,15 +11,29 @@ import UIKit
 class ViewController: UIViewController {
     
     private lazy var game:Concentration = Concentration(numberOfPairsOfCard: (cardButtons.count + 1) / 2)
-
+    
     private(set) var flipCount = 0 {
         didSet {
-            flipCountLabel.text = "Flips: \(flipCount)"
+            // flipCountLabel.text = "Flips: \(flipCount)"  使用update中的NSAttributedStringkKey 注释
+            updateFilpCountLabel()
         }
     }
     
-    @IBOutlet private weak var flipCountLabel: UILabel!
-
+    private func updateFilpCountLabel() {
+        let attrivutes: [NSAttributedString.Key:Any] = [
+            .strokeWidth : 5.0,
+        ]
+        
+        let attributeString = NSAttributedString(string: "Flips: \(flipCount)", attributes: attrivutes)
+        flipCountLabel.attributedText = attributeString
+    }
+    
+    @IBOutlet private weak var flipCountLabel: UILabel!{
+        didSet{
+            updateFilpCountLabel()
+        }
+    }
+    
     @IBOutlet private var cardButtons: [UIButton]!
     
     @IBAction private func touchCard(_ sender: UIButton) {
@@ -32,7 +46,7 @@ class ViewController: UIViewController {
         }
     }
     
-   private func updateViewFromModel()  {
+    private func updateViewFromModel()  {
         for index in cardButtons.indices {
             let button = cardButtons[index]
             let card = game.cards[index]
@@ -45,19 +59,23 @@ class ViewController: UIViewController {
             }
         }
     }
-
     
-   private var emojiChoices = ["🦇", "😱", "🙀", "😈", "🎃", "👻", "🍭", "🍬", "🍎", "👀", "🐼", "🐔", "🚒", "❤️"]
     
-   private var emoji =  Dictionary<Int,String>() //字典的特殊语法糖  var emoji = [INt:String]()
-
-   private func emoji(for card: Card) -> String {
-        if emoji[card.identifier] == nil , emojiChoices.count > 0{
+    //private var emojiChoices = ["🦇", "😱", "🙀", "😈", "🎃", "👻", "🍭", "🍬", "🍎", "👀", "🐼", "🐔", "🚒", "❤️"]
+    private var emojiChoices = "🦇😱🙀😈🎃👻🍭🍬🍎👀🐼🐔🚒❤️"
+    
+    
+    private var emoji =  Dictionary<Card,String>() //字典的特殊语法糖  var emoji = [INt:String]()
+    
+    private func emoji(for card: Card) -> String {
+        if emoji[card] == nil , emojiChoices.count > 0{
             
-                //let randomIndex = Int(arc4random_uniform(UInt32(emojiChoices.count)))  //extension Int 的使用使其可以省略
-                emoji[card.identifier] = emojiChoices.remove(at: emojiChoices.count.arcrandom)
-            }
-        return emoji[card.identifier] ?? "?"
+            //let randomIndex = Int(arc4random_uniform(UInt32(emojiChoices.count)))  //extension Int 的使用使其可以省略
+            //                emoji[card] = emojiChoices.remove(at: emojiChoices.count.arcrandom)   emojiChoices 变成字符串类型 所以这句注释
+            let randomStringIndex = emojiChoices.index(emojiChoices.startIndex, offsetBy: emojiChoices.count.arcrandom)
+            emoji[card] = String(emojiChoices.remove(at: randomStringIndex))
+        }
+        return emoji[card] ?? "?"
     }
 }
 

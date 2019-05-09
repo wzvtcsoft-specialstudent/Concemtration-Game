@@ -19,7 +19,8 @@ class Concentration{
         if !cards[index].IsMatched {
             if let matchIndex = indexOfOneAndOnlyFaceUpCard, matchIndex != index {
                 // 匹配成功
-                if cards[matchIndex].identifier == cards[index].identifier{
+                // if cards[matchIndex].identifier == cards[index].identifier   因为Card里面增加协议Hasable 定义了==还有hashValue（10版本已经弃用） 所以修改这代码为下面
+                if cards[matchIndex] == cards[index]{
                     cards[matchIndex].IsMatched = true
                     cards[index].IsMatched = true
                 }
